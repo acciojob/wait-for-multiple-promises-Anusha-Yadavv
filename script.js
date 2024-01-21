@@ -1,16 +1,19 @@
 //your JS code here. If required.
-// Function to create a Promise that resolves after a random time between 1 and 3 seconds
 function createRandomPromise(name) {
-  const randomTime = Math.floor(Math.random() * 3000) + 1000; // Random time between 1 and 3 seconds
+  const randomTime = Math.floor(Math.random() * 2000) + 1000; // Adjusted range to 1-2 seconds
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve({ name, time: randomTime / 1000 }); // Resolve with an object containing promise name and time in seconds
+      resolve({ name, time: randomTime / 1000 });
     }, randomTime);
   });
 }
+// Get the tbody element
+const tbody = document.getElementById('output');
 
-// Add a loading row initially
-document.getElementById('output').innerHTML = '<tr><td colspan="2">Loading...</td></tr>';
+// Create and append the loading row
+const loadingRow = document.createElement('tr');
+loadingRow.innerHTML = '<td colspan="2">Loading...</td>';
+tbody.appendChild(loadingRow);
 
 // Create an array of 3 promises
 const promises = [
@@ -22,21 +25,21 @@ const promises = [
 // Use Promise.all to wait for all promises to resolve
 Promise.all(promises)
   .then((results) => {
-    // Remove loading text
-    document.getElementById('output').innerHTML = '';
+    // Remove the loading row
+    tbody.removeChild(loadingRow);
 
     // Populate the table with the required values
     results.forEach((result) => {
       const row = document.createElement('tr');
       row.innerHTML = `<td>${result.name}</td><td>${result.time.toFixed(3)}</td>`;
-      document.getElementById('output').appendChild(row);
+      tbody.appendChild(row);
     });
 
     // Calculate and add the Total row
     const totalTime = results.reduce((total, result) => total + result.time, 0);
     const totalRow = document.createElement('tr');
     totalRow.innerHTML = `<td>Total</td><td>${totalTime.toFixed(3)}</td>`;
-    document.getElementById('output').appendChild(totalRow);
+    tbody.appendChild(totalRow);
   })
   .catch((error) => {
     console.error('Error:', error);
